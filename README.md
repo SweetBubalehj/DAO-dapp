@@ -1,6 +1,6 @@
-# SOLYANKA DAO
+# Decentrlized Voting
 
-SOLYANKA DAO - это децентрализованное автономное сообщество (DAO), предназначенное для проведения голосования в blockchain. Смарт-контракт написал на Hardhat, а фронт-енд написан на React с использованием библиотеки Ant Design для интерфейса и Wagmi/Ethers/RainbowKit для работы с blockchain.
+Decentrlized Voting - это приложение, предназначенное для проведения голосования в blockchain. Смарт-контракт написал на Hardhat, а фронт-енд написан на React с использованием библиотеки Ant Design для интерфейса и Wagmi/Ethers/RainbowKit для работы с blockchain.
 
 ## Особенности
 
@@ -15,7 +15,7 @@ SOLYANKA DAO - это децентрализованное автономное 
 1. Клонируйте репозиторий:
 
 ```
-git clone https://github.com/SweetBubalehj/DAO-dapp.git
+git clone https://github.com/SweetBubalehj/Decentrlized-Voting-dapp.git
 ```
 
 2. Установите зависимости для hardhat (для работы с контрактом):
