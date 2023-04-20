@@ -1,4 +1,4 @@
-# Decentrlized Voting
+# Decentralized Voting
 
 Decentralized Voting - это приложение, предназначенное для проведения голосования в blockchain. Смарт-контракт написал на Hardhat, а фронт-енд написан на React с использованием библиотеки Ant Design для интерфейса и Wagmi/Ethers/RainbowKit для работы с blockchain.
 
