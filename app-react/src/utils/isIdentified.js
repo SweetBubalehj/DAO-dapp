@@ -1,17 +1,17 @@
 import { useContractRead, useAccount } from "wagmi";
-import factoryABI from "../abi/factoryABI";
+import { Address, ABI } from "../contracts/sbtContract";
 
-const useGetIsVerified = () => {
+const useCheckIdentity = () => {
   const { address } = useAccount();
 
   const { data: isVerified } = useContractRead({
-    address: "0xE7cDD9eDD77fC483F927233459F4f2A04008c616",
-    abi: factoryABI,
-    functionName: "getIsIdentified",
+    address: Address,
+    abi: ABI,
+    functionName: "checkIdentity",
     args: [address],
   });
 
   return isVerified;
 };
 
-export default useGetIsVerified;
+export default useCheckIdentity;

@@ -1,17 +1,17 @@
 import { useContractRead, useAccount } from "wagmi";
-import factoryABI from "../abi/factoryABI";
+import { Address, ABI } from "../contracts/sbtContract";
 
 const useGetIsModerator = () => {
   const { address } = useAccount();
 
-  const { data: identifyInfo } = useContractRead({
-    address: "0xE7cDD9eDD77fC483F927233459F4f2A04008c616",
-    abi: factoryABI,
-    functionName: "getIdentityInfo",
+  const { data: roleInfo } = useContractRead({
+    address: Address,
+    abi: ABI,
+    functionName: "getRole",
     args: [address],
   });
 
-  if (identifyInfo && identifyInfo[4] > 0) {
+  if (roleInfo && roleInfo > 0) {
     return true;
   } else return false;
 };

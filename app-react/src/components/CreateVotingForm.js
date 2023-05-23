@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import {
+  Row,
+  Col,
   Form,
   Input,
   Button,
-  InputNumber,
   Switch,
   Space,
   Spin,
@@ -13,15 +14,15 @@ import {
   Collapse,
   notification,
 } from "antd";
-import factoryABI from "../abi/factoryABI";
-import useGetIsVerified from "../utils/isIdentified";
+import { Address, ABI } from "../contracts/factoryContract";
+import useCheckIdentity from "../utils/isIdentified";
 import {
   FormOutlined,
   UserOutlined,
   MinusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import useGetIsKYC from "../utils/isKYC";
+import useCheckKYC from "../utils/isKYC";
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -30,44 +31,44 @@ const CreateVotingForm = () => {
   const [title, setTitle] = useState("");
   const [proposalNames, setProposalNames] = useState([]);
   const [durationMinutes, setDurationMinutes] = useState(60);
-  const [quorom, setQuorom] = useState(0);
   const [isKYC, setIsKYC] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
 
-  const isUserKYC = useGetIsKYC();
-  const isVerified = useGetIsVerified();
+  const isUserKYC = useCheckKYC();
+  const isVerified = useCheckIdentity();
 
   const transactionIsSuccess = () => {
     notification.success({
-      message: "Transaction successful",
+      message: "Транзакция успешна",
       placement: "bottomRight",
     });
   };
 
-  const transactionIsLoading = () =>{
+  const transactionIsLoading = () => {
     notification.warning({
-      message: "Check your wallet",
+      message: "Проверьте ваш кошелек",
       placement: "bottomRight",
     });
-  }
+  };
 
   const { config } = usePrepareContractWrite({
-    address: "0xE7cDD9eDD77fC483F927233459F4f2A04008c616",
-    abi: factoryABI,
+    address: Address,
+    abi: ABI,
     functionName: "createVoting",
-    args: [title, proposalNames, durationMinutes, quorom, isKYC],
+    args: [title, proposalNames, durationMinutes, isKYC, isPrivate],
   });
 
   const { isLoading, isSuccess, write } = useContractWrite(config);
 
   const durations = [
-    { label: "1 minute", value: 1 },
-    { label: "5 minutes", value: 5 },
-    { label: "10 minutes", value: 10 },
-    { label: "30 minutes", value: 30 },
-    { label: "1 hour", value: 60 },
-    { label: "1 day", value: 60 * 24 },
-    { label: "1 week", value: 60 * 24 * 7 },
-    { label: "1 month", value: 60 * 24 * 30 },
+    { label: "1 час", value: 60 },
+    { label: "2 часа", value: 60 * 2 },
+    { label: "12 часов", value: 60 * 12 },
+    { label: "1 день", value: 60 * 24 },
+    { label: "3 дня", value: 60 * 24 * 3 },
+    { label: "1 неделя", value: 60 * 24 * 7 },
+    { label: "2 недели", value: 60 * 24 * 14 },
+    { label: "1 месяц", value: 60 * 24 * 30 },
   ];
 
   const getDurationInMinutes = (value) => {
@@ -93,7 +94,7 @@ const CreateVotingForm = () => {
         direction="vertical"
         style={{ width: "100%", marginBottom: "50px" }}
       >
-        <Spin tip="Awaiting Wallet" size="large">
+        <Spin tip="Ожидается кошелек" size="large">
           <div />
         </Spin>
       </Space>
@@ -104,8 +105,8 @@ const CreateVotingForm = () => {
     return (
       <Alert
         style={{ width: "100%", marginBottom: "50px" }}
-        message="You are not registered"
-        description="Please identify yourself to use application."
+        message="Вы не зарегестрированы"
+        description="Пожалуйста, введите вашу информацию чтобы пользоваться приложением."
         type="warning"
         showIcon
       />
@@ -114,19 +115,19 @@ const CreateVotingForm = () => {
 
   return (
     <>
-      <Collapse accordion>
-        <Panel header="Create voting" key="1">
+      <Collapse accordion style={{marginTop: "20px"}}>
+        <Panel header="Создать голосование" key="1">
           <Form layout="vertical">
             <Form.Item
               required={false}
-              label="Title"
+              label="Название"
               name="title"
-              tooltip="Title of the voting"
+              tooltip="Название голосования"
               rules={[
                 {
                   required: true,
                   whitespace: true,
-                  message: "Please input title",
+                  message: "Пожалуйста введите название",
                 },
               ]}
             >
@@ -144,7 +145,7 @@ const CreateVotingForm = () => {
                 {
                   validator: async (_, names) => {
                     if (!names || names.length < 2) {
-                      return Promise.reject(new Error("At least 2 proposals"));
+                      return Promise.reject(new Error("Как минимум 2 кандидата"));
                     }
                   },
                 },
@@ -154,8 +155,8 @@ const CreateVotingForm = () => {
                 <>
                   {fields.map((field, index) => (
                     <Form.Item
-                      label={index === 0 ? "Proposals" : ""}
-                      tooltip={index === 0 ? "Proposals of the voting" : ""}
+                      label={index === 0 ? "Кандидаты" : ""}
+                      tooltip={index === 0 ? "Кандиды для голосования" : ""}
                       required={false}
                       key={field.key}
                     >
@@ -166,7 +167,7 @@ const CreateVotingForm = () => {
                           {
                             required: true,
                             whitespace: true,
-                            message: "Please input proposal name",
+                            message: "Пожалуйста введите кандидата",
                           },
                         ]}
                         noStyle
@@ -214,7 +215,7 @@ const CreateVotingForm = () => {
                       }}
                       icon={<PlusOutlined />}
                     >
-                      Add Proposal
+                      Добавить кандидата
                     </Button>
                     <Form.ErrorList errors={errors} />
                   </Form.Item>
@@ -222,43 +223,40 @@ const CreateVotingForm = () => {
               )}
             </Form.List>
             <Form.Item>
-              <div
-                style={{
-                  textAlign: "center",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <div style={{ marginRight: "10px" }}>Duration:</div>
-                <Select
-                  style={{ width: "110px", marginRight: "10px" }}
-                  defaultValue={durations[0].value}
-                  onChange={(value) =>
-                    setDurationMinutes(getDurationInMinutes(value))
-                  }
-                >
-                  {durations.map((duration) => (
-                    <Option key={duration.value} value={duration.value}>
-                      {duration.label}
-                    </Option>
-                  ))}
-                </Select>
-                <div style={{ marginRight: "10px" }}>Quorom:</div>
-                <InputNumber
-                  min={0}
-                  value={quorom}
-                  onChange={setQuorom}
-                  style={{ width: "110px", marginRight: "10px" }}
-                />
-                {isUserKYC && (
+              <Row justify="center" align="middle">
+                <Col xs={24} sm={8} md={12} style={{ textAlign: "center" }}>
+                  <>Длительность: </>
+                  <Select
+                    style={{ width: "110px" }}
+                    defaultValue={durations[0].value}
+                    onChange={(value) =>
+                      setDurationMinutes(getDurationInMinutes(value))
+                    }
+                  >
+                    {durations.map((duration) => (
+                      <Option key={duration.value} value={duration.value}>
+                        {duration.label}
+                      </Option>
+                    ))}
+                  </Select>
+                </Col>
+                <Col xs={24} sm={8} md={6} style={{ textAlign: "center" }}>
                   <Switch
-                    style={{ width: "80px", marginRight: "5px" }}
-                    checkedChildren="KYC ON"
-                    unCheckedChildren="KYC OFF"
-                    onChange={setIsKYC}
+                    checkedChildren="ПРИВАТНОЕ"
+                    unCheckedChildren="ПУБЛИЧНОЕ"
+                    onChange={setIsPrivate}
                   />
+                </Col>
+                {isUserKYC && (
+                  <Col xs={24} sm={8} md={6} style={{ textAlign: "center" }}>
+                    <Switch
+                      checkedChildren="KYC ON"
+                      unCheckedChildren="KYC OFF"
+                      onChange={setIsKYC}
+                    />
+                  </Col>
                 )}
-              </div>
+              </Row>
             </Form.Item>
 
             <Form.Item>
@@ -267,7 +265,7 @@ const CreateVotingForm = () => {
                 htmlType="submit"
                 onClick={() => write?.()}
               >
-                Deploy Voting
+                Развернуть голосование
               </Button>
             </Form.Item>
           </Form>

@@ -7,21 +7,23 @@
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
-
-  const lockedAmount = hre.ethers.utils.parseEther("0.001");
-
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-  await lock.deployed();
-
-  console.log(
-    `Lock with ${ethers.utils.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+  const SBTArgs = ["DVoting SBT", "Bubaleh", "...@gmail.com", 21];
+  const SBToken = await hre.ethers.getContractFactory("SBToken");
+  const SBTContract = await SBToken.deploy(
+    SBTArgs[0],
+    SBTArgs[1],
+    SBTArgs[2],
+    SBTArgs[3]
   );
+  await SBTContract.deployed();
+  console.log(`SBT deployed to ${SBTContract.address}`);
+
+  const VotingFactoryArgs = SBTContract.address;
+  const VotingFactory = await hre.ethers.getContractFactory("VotingFactory");
+  const VotingFactoryContract = await VotingFactory.deploy(VotingFactoryArgs);
+  await VotingFactoryContract.deployed();
+  console.log(`Voting Factory deployed to ${VotingFactoryContract.address}`);
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere

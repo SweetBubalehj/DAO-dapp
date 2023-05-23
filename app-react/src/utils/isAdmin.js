@@ -1,19 +1,21 @@
 import { useContractRead, useAccount } from "wagmi";
-import factoryABI from "../abi/factoryABI";
+import { Address, ABI } from "../contracts/sbtContract";
 
 const useGetIsAdmin = () => {
   const { address } = useAccount();
 
-  const { data: isAdmin } = useContractRead({
-    address: "0xE7cDD9eDD77fC483F927233459F4f2A04008c616",
-    abi: factoryABI,
-    functionName: "identities",
+  const { data: roleInfo } = useContractRead({
+    address: Address,
+    abi: ABI,
+    functionName: "getRole",
     args: [address],
   });
 
-  if (isAdmin.roleWeight > 1) {
+  if (roleInfo && roleInfo === 2) {
     return true;
-  } else return false;
+  } else {
+    return false;
+  }
 };
 
 export default useGetIsAdmin;

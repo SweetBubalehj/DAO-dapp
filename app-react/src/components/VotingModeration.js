@@ -1,8 +1,8 @@
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { Form, Input, Button, Collapse, notification } from "antd";
-import votingABI from "../abi/votingABI";
 import { useState, useEffect } from "react";
 import { FormOutlined } from "@ant-design/icons";
+import { ABI } from "../contracts/votingContract";
 
 const { Panel } = Collapse;
 
@@ -11,22 +11,22 @@ const VotingModeration = ({ votingAddress }) => {
 
   const transactionIsSuccess = () => {
     notification.success({
-      message: "Transaction successful",
+      message: "Транзакция успешна",
       placement: "bottomRight",
     });
   };
 
   const transactionIsLoading = () => {
     notification.warning({
-      message: "Check your wallet",
+      message: "Проверьте ваш кошелек",
       placement: "bottomRight",
     });
   };
 
   const { config: titleConfig } = usePrepareContractWrite({
     address: votingAddress,
-    abi: votingABI,
-    functionName: "changeTitle",
+    abi: ABI,
+    functionName: "moderateTitle",
     args: [title],
   });
 
@@ -50,17 +50,17 @@ const VotingModeration = ({ votingAddress }) => {
   return (
     <>
       <Collapse accordion style={{ marginBottom: "20px" }}>
-        <Panel header="Voting moderation" key="1">
+        <Panel header="Модерация голосования" key="1">
           <Form>
             <Form.Item
               required={false}
-              label="Title"
+              label="Название"
               name="title"
               rules={[
                 {
                   required: true,
                   whitespace: true,
-                  message: "Please input title",
+                  message: "Пожалуйста введите название",
                 },
               ]}
             >
@@ -79,7 +79,7 @@ const VotingModeration = ({ votingAddress }) => {
               }}
             >
               <Button danger htmlType="submit" onClick={() => changeTitle?.()}>
-                Change Title
+                Изменить название
               </Button>
             </Form.Item>
           </Form>

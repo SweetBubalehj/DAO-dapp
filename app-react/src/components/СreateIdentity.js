@@ -1,8 +1,8 @@
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { Form, Input, Button, InputNumber, notification } from "antd";
-import factoryABI from "../abi/factoryABI";
+import { Address, ABI } from "../contracts/sbtContract";
 import { useState, useEffect } from "react";
-import useGetIsVerified from "../utils/isIdentified";
+import useCheckIdentity from "../utils/isIdentified";
 import { MailOutlined, UserOutlined } from "@ant-design/icons";
 
 function CreateIdentityForm() {
@@ -10,30 +10,31 @@ function CreateIdentityForm() {
   const [email, setEmail] = useState("");
   const [age, setAge] = useState(13);
 
-  const isVerified = useGetIsVerified();
+  const isVerified = useCheckIdentity();
 
   const { config } = usePrepareContractWrite({
-    address: "0xE7cDD9eDD77fC483F927233459F4f2A04008c616",
-    abi: factoryABI,
-    functionName: "createIdentity",
+    address: Address,
+    abi: ABI,
+    functionName: "createSoul",
     args: [name, email, age],
   });
 
-  const { data, isLoading, isSuccess, write } = useContractWrite(config);
+  const { isLoading, isSuccess, write } = useContractWrite(config);
 
   const transactionIsSuccess = () => {
     notification.success({
-      message: "Transaction successful",
+      message: "Транзакция успешна",
       placement: "bottomRight",
     });
   };
 
-  const transactionIsLoading = () =>{
+  const transactionIsLoading = () => {
     notification.warning({
-      message: "Check your wallet",
+      message: "Проверьте ваш кошелек",
       placement: "bottomRight",
     });
-  }
+  };
+  
 
   useEffect(() => {
     if (isLoading) {
@@ -57,7 +58,7 @@ function CreateIdentityForm() {
 
   return (
     <Form>
-      <Form.Item label="Name">
+      <Form.Item label="Имя">
         <Input
           prefix={<UserOutlined style={{ color: "grey" }} />}
           allowClear
@@ -74,14 +75,14 @@ function CreateIdentityForm() {
         />
       </Form.Item>
       <Form.Item
-        label="Age Years"
-        tooltip="Your age connected to address (PG-13)"
+        label="Возраст"
+        tooltip="Ваш реальный возраст (PG-13)"
       >
         <InputNumber min={13} max={200} value={age} onChange={setAge} />
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" onClick={() => write?.()}>
-          Create Identity
+          Зарегистрироваться
         </Button>
       </Form.Item>
     </Form>
