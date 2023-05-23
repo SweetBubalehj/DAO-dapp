@@ -1,4 +1,4 @@
-# SOLYANKA DAO
+# Decentralized Voting
 
 [DVotings](https://dvotings.vercel.app/) - это приложение, предназначенное для проведения голосования в blockchain. Смарт-контракты написаны на Hardhat, а фронт-енд написан на React с использованием библиотеки Ant Design для интерфейса и Wagmi/Ethers/RainbowKit для работы с blockchain.
 
