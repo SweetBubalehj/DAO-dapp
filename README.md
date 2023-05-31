@@ -17,7 +17,7 @@
 1. Клонируйте репозиторий:
 
 ```
-git clone https://github.com/SweetBubalehj/...
+git clone https://github.com/SweetBubalehj/Decentralized-Voting-dapp.git
 ```
 
 2. Установите зависимости для hardhat (для работы с контрактом):
